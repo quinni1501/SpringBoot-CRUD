@@ -9,21 +9,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import vn.iotstar.entity.Category;
 import vn.iotstar.services.ICategoryService;
 
+@Controller
+@RequestMapping("admin/categories")
 public class CategoryController {
 	@Autowired
 	private ICategoryService categoryService;
+	
+	@GetMapping("")
+	public String list(ModelMap model) {
+		List<Category> list = categoryService.findAll();
+		model.addAttribute("categories", list);
+		return "admin/categories/list";
+	}
 
 	@GetMapping("add")
 	public String add(ModelMap model) {
@@ -43,12 +54,7 @@ public class CategoryController {
 		return "redirect:/admin/categories";
 	}
 
-	@GetMapping("")
-	public String list(ModelMap model) {
-		List<Category> list = categoryService.findAll();
-		model.addAttribute("categories", list);
-		return "admin/categories/list";
-	}
+	
 
 	@GetMapping("edit/{categoryId}")
 	public String edit(@PathVariable("categoryId") Long categoryId, ModelMap model) {
